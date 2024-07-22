@@ -20,7 +20,7 @@ This tool provides a Python script to convert unordered list items in a Markdown
 
 - Python 3.6 or higher
 - `rich` library for enhanced traceback formatting
-- `constants.py` file with `OUTPUT_FILEPATH` and `current_date` variables
+- `constants.py` file with `OUTPUT_FILEPATH` variables
 
 #### Installation
 
