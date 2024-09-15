@@ -12,6 +12,12 @@ install()
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
+# Regular expression pattern to match markdown list items more strictly.
+# This pattern ensures that the dash is either at the start of the file or follows a newline, and is treated as a list item.
+# MARKDOWN_LIST_ITEM_PATTERN = r"(?<=^|\n)- (.*(?:\n(?!- ).*)*)"
+# Regular expression pattern to match potential markdown list items.
+MARKDOWN_LIST_ITEM_PATTERN = r"^-\s+(.*(?:\n(?!- ).*)*)"
+
 
 def read_markdown_file(file_path):
     """Read the content of a markdown file."""
@@ -24,11 +30,14 @@ def read_markdown_file(file_path):
         logging.info(f"Successfully read file: {file_path}")
         return content
 
-
 def extract_list_items(content):
-    """Extract unordered list items from markdown content."""
+    """Extract unordered list items from markdown content, ensuring they are actual list items."""
     try:
-        list_items = re.findall(r"- (\[.*?\]\(.*?\))", content)
+        potential_list_items = re.findall(MARKDOWN_LIST_ITEM_PATTERN, content, re.MULTILINE)
+        list_items = []
+        for item in potential_list_items:
+            # Further checks can be added here if necessary
+            list_items.append(item)
     except Exception:
         logging.exception("Error extracting list items")
         raise
