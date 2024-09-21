@@ -1,11 +1,15 @@
+from __future__ import annotations
+
 import argparse
 import logging
 import os
 import re
+import sys
 import time
 
-from constants import OUTPUT_FILEPATH, current_date
 from rich.traceback import install
+
+from constants import OUTPUT_FILEPATH, current_date
 
 install()
 
@@ -19,16 +23,26 @@ logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %
 MARKDOWN_LIST_ITEM_PATTERN = r"^-\s+(.*(?:\n(?!- ).*)*)"
 
 
-def read_markdown_file(file_path):
+# Sanitize current_date to ensure it's safe for file names
+def sanitize_filename(value: str) -> str:
+    return re.sub(r'[<>:"/\\|?*]', "_", value)
+
+
+# Assuming current_date is defined somewhere in your code
+current_date = sanitize_filename(current_date)
+
+
+def read_markdown_file(file_path) -> str | None:
     """Read the content of a markdown file."""
     try:
-        with open(file_path, "r", encoding="utf-8") as file:
+        with open(file_path, encoding="utf-8") as file:
             content = file.read()
     except Exception:
         logging.exception(f"Error reading file {file_path}")
     else:
         logging.info(f"Successfully read file: {file_path}")
         return content
+
 
 def extract_list_items(content):
     """Extract unordered list items from markdown content, ensuring they are actual list items."""
@@ -46,7 +60,7 @@ def extract_list_items(content):
         return list_items
 
 
-def format_to_table(list_items):
+def format_to_table(list_items) -> str:
     """Format list items into a table with specified columns."""
     table = "| Name | Message | Category |\n"
     table += "|------|---------|----------|\n"
@@ -82,7 +96,7 @@ def process_markdown_file(input_filepath, output_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert markdown list items to a table.")
     parser.add_argument(
-        "--input_filepath", type=str, required=True, help="Path to the input markdown file (e.g., /path/to/file.md)"
+        "--input_filepath", type=str, required=True, help="Path to the input markdown file (e.g., /path/to/file.md)",
     )
 
     args = parser.parse_args()
@@ -90,14 +104,21 @@ if __name__ == "__main__":
     input_filepath = args.input_filepath
 
     if not OUTPUT_FILEPATH:
-        logging.info("OUTPUT_FILE is empty. Using default output path 'output.md'.")
-        output_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"data/{current_date}-output.md")
+        logging.info("OUTPUT_FILE is empty. Using input file's directory for output path.")
+        input_dir = os.path.dirname(os.path.abspath(input_filepath))
+        input_filename = os.path.basename(input_filepath).replace(".md", "")  # Remove the .md extension
+        output_filepath = os.path.join(input_dir, f"{input_filename}-{current_date}-table.md")
+
+        # Ensure the output directory exists
+        if not os.path.exists(input_dir):
+            logging.error(f"Output directory '{input_dir}' does not exist.")
+            sys.exit(1)
     else:
         output_filepath = OUTPUT_FILEPATH
 
     if not os.path.exists(input_filepath):
         logging.error(f"Input file location '{input_filepath}' does not exist.")
-        exit(1)
+        sys.exit(1)
 
     logging.info("Sleeping for 2 seconds before starting the processing.")
     time.sleep(2)

@@ -15,33 +15,90 @@ extend-exclude = '''
 # --- ruff -------------------------------------------------------------------
 [tool.ruff]
 select = [
-  'A', # flake8 builtins
-  'B', # flake8 bugbear
-  'C4', # flake8 comprehensions
-  'C90', # mccabe
-  'D', # pydocstyle
-  'E', # pycodestyle
-  'F', # pyflakes
-  'I', # isort
-  'N', # pep8-naming
-  # 'PTH', # flake8-use-pathlib
-  'Q',  # flake8-quotes
-  'S',  # bandit
-  'SIM',  # flake8-simplify
-  'TRY',  # tryceratops
-  'W', # pycodestyle
-  # 'T20', # flake8 print
+  "A",     # flake8-builtins
+  "AIR",   # Airflow
+  "ANN",   # flake8-annotations
+  "ARG",   # flake8-unused-arguments
+  "ASYNC", # flake8-async
+  "B",     # flake8-bugbear
+  "BLE",   # flake8-blind-except
+  "C4",    # flake8-comprehensions
+  "C90",   # mccabe
+  "COM",   # flake8-commas
+  #"D",     # pydocstyle
+  "DJ",   # flake8-django
+  "DTZ",  # flake8-datetimez
+  "E",    # pycodestyle Error
+  "EM",   # flake8-errmsg
+  "ERA",  # eradicate
+  "EXE",  # flake8-executable
+  "F",    # Pyflakes
+  "FA",   # flake8-future-annotations
+  "FBT",  # flake8-boolean-trap
+  "FIX",  # flake8-fixme
+  "FLY",  # flynt
+  "G",    # flake8-logging-format
+  "I",    # isort
+  "ICN",  # flake8-import-conventions
+  "INP",  # flake8-no-pep420
+  "INT",  # flake8-gettext
+  "ISC",  # flake8-implicit-str-concat
+  "LOG",  # flake8-logging
+  "N",    # pep8-naming
+  "NPY",  # NumPy-specific rules
+  "PD",   # pandas-vet
+  "PERF", # Perflint
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  "PL",   # Pylint
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "PYI",  # flake8-pyi
+  "Q",    # flake8-quotes
+  "RET",  # flake8-return
+  "RSE",  # flake8-raise
+  "RUF",  # Ruff-specific rules
+  "S",    # flake8-bandit
+  "SIM",  # flake8-simplify
+  "SLF",  # flake8-self
+  "SLOT", # flake8-slots
+  "T10",  # flake8-debugger
+  "T20",  # flake8-print
+  "TCH",  # flake8-type-checking
+  "TD",   # flake8-todos
+  "TID",  # flake8-tidy-imports
+  # "TRIO", # flake8-trio
+  "TRY", # tryceratops
+  "UP",  # pyupgrade
+  "W",   # pycodestyle Warning
+  "YTT", # flake8-2020
+  # TODO: enable these once they're out of preview
+  # "CPY",  # flake8-copyright
+  # "FURB", # refurb
 ]
 
 # Avoid trying to fix extension types:
-unfixable = ["B"]
+unfixable = [
+  "B",      # Autofixing bugbear findings is a bit too aggressive
+  "ERA001", # Don't remove commented-out code
+  "F841",   # Autofixing unused variables conservatively leaves right-hand-side intact, which is almost always incorrect
+  "RUF",    # Autofixes for ruff-specific rules possibly too aggressive
+  "SIM",    # Autofixes for flake8-simplify possibly too aggressive
+  "TRY",    # Autofixes for tryceratops possibly too aggressive
+]
 
 ignore = [
-  "B905",  # zip strict=True; remove once python <3.10 support is dropped.
-  "D100",  # do not require module-level docstrings
-  "D104",  # do not require package docstrings
-  "D107",  # do not require docstrings in __init__ files
-  "D205",  # don't require linebreak after docstring (ruff vs black conflict)
+  "ERA001",
+  "T201",
+  "B905",   # zip strict=True; remove once python <3.10 support is dropped.
+  "D100",   # do not require module-level docstrings
+  "D104",   # do not require package docstrings
+  "D107",   # do not require docstrings in __init__ files
+  "D205",   # don't require linebreak after docstring (ruff vs black conflict)
+  "D401",
+  "PGH003",
+  # "TRY002",
+  # "D103",
   # "E203", # not in ruff
   # "E265", # not in ruff
   # "E266", # not in ruff
@@ -50,11 +107,24 @@ ignore = [
   "F403", # import *
   "F405", # defined from import *
   # "F541", # f-string missing placeholders
-  "N999",  # allow "invalid" module names due to jinja templates  "S101", # assert
+  "N999",   # allow "invalid" module names due to jinja templates  "S101", # assert
   "SIM105", # allow except: pass
   "TRY003", # Avoid specifying messages outside exception class; overly strict, especially for ValueError
   "TRY201", # Allow raise without exception name (align with Sonarlint)
   # "W503", # not in ruff
+  "A001",   # Allow shadowing built-in types like 'id'
+  "A002",   # Allow shadowing built-in types like 'id'
+  "DTZ005", # Allow datetime.now() without specifiying timezone
+  "ANN101", # Type annotations for "self" args -> deprecated
+  "ANN102", # Type annotations for "cls" args -> deprecated
+  "DJ",     # Disable Django linting -> unused
+  "E501",   # Avoid linter errors for line length -> ruff-format handles line length as good as possible
+  "G004",   # Allow logging statements using f-strings
+  "ISC001", # Conflicts with COM812 -> prefer trailing commas over implicit string concatenation to reduce diff noise
+  "TD002",  # Don't require author for TODOs
+  "TRY002", # Allow descriptive exception messages without defining custom exception classes for now
+  "TRY003", # Allow descriptive exception messages without defining custom exception classes for now
+  #"D",      # TODO: remove to enforce docstrings
 ]
 
 exclude = [
@@ -86,7 +156,7 @@ fix = true
 line-length = 119
 
 # Directories with source code
-src = ["notebooks", "src", "tests"]
+# src = ["notebooks", "src", "tests"]
 
 # Assumed Python version
 target-version = "py39"
@@ -103,11 +173,7 @@ target-version = "py39"
 
 # --- ruff plugins --------------------
 [tool.ruff.flake8-bugbear]
-extend-immutable-calls = [
-    "chr",
-    "typer.Argument",
-    "typer.Option",
-]
+extend-immutable-calls = ["chr", "typer.Argument", "typer.Option"]
 
 [tool.ruff.isort]
 combine-as-imports = true
@@ -119,10 +185,58 @@ known-first-party = ["ds_utils", "src"]
 # known-local-folder = ["src"] # for relative imports
 
 [tool.ruff.mccabe]
-max-complexity = 18
+max-complexity = 14
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.ruff.pep8-naming]
 ignore-names = []
 
-[tool.ruff.pydocstyle]
-convention = "numpy"
+# [tool.ruff.pydocstyle]
+# convention = "numpy"
+
+# --- pytest -----------------------------------------------------------------
+# ref: https://docs.pytest.org/en/7.3.x/reference/customize.html
+[tool.pytest.ini_options]
+addopts = '''
+    -ra
+    --strict-markers
+    --ignore=docs/conf.py
+    --ignore=setup.py
+    --ignore=ci
+    --ignore=.eggs
+    --tb=short
+'''
+# --doctest-modules
+# --doctest-glob=\*.rst
+norecursedirs = [
+  ".env",
+  ".git",
+  ".nox",
+  ".pytest_cache",
+  ".tox",
+  "__pycache__",
+  "dist",
+  "docs",
+  "build",
+  "migrations",
+  "notebooks",
+  "writeup",
+]
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+pythonpath = "src"
+testpaths = ["tests"]
+# log_cli = true
+
+
+# --- coverage ---------------------------------------------------------------
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
