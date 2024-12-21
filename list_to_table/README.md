@@ -2,6 +2,33 @@
 
 This repository consists of various tools for working with Markdown files. Currently, it houses the Markdown List to Table Converter.
 
+## Prerequisites
+
+- Python 3.6 or higher
+
+### Installation
+
+1. Clone the repository:
+
+    ```sh
+    git clone https://github.com/myinusa/markdown-tools.git
+    cd markdown-tools
+    ```
+
+2. Create a virtual environment and activate it:
+
+    ```sh
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. Install the required packages:
+
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+
 ## Tools
 
 ### Markdown List to Table Converter
@@ -55,10 +82,18 @@ This tool provides a Python script to convert unordered list items in a Markdown
 2. Run the script with the required argument:
 
     ```sh
-    python list-to-table.py --input_filepath /path/to/input.md
+    python list_to_table.py /path/to/input.md
     ```
 
-    - `--input_filepath`: Path to the input Markdown file containing the unordered list items.
+    <!-- - `--input_filepath`: Path to the input Markdown file containing the unordered list items. -->
+
+
+#### Testing
+
+```sh
+python3 -m unittest discover ./test -vvv 
+```
+
 
 #### Example
 
