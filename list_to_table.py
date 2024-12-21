@@ -9,7 +9,7 @@ import time
 
 from rich.traceback import install
 
-from constants import OUTPUT_FILEPATH, current_date
+from constants import OUTPUT_DIR, OUTPUT_FILEPATH, current_date
 
 install()
 
